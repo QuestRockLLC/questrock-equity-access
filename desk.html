@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>QuestRock submissions</title>
+  <link rel="stylesheet" href="/public/styles.css?v=4">
+</head>
+<body>
+<header>
+  <div class="shell header-inner">
+    <a href="/"><img class="logo" src="/public/questrock-logo.png?v=3" alt="QuestRock"></a>
+    <button class="sign-out" type="button" id="signOut">Sign out</button>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="desk-hero">
+      <h1>Equity Access submissions</h1>
+      <p>Inquiries from the public form. Call or email from here. Nothing is sent automatically.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><small>Saved inquiries</small><strong id="metricAll">0</strong></div>
+      <div class="kpi"><small>With phone</small><strong id="metricPhone">0</strong></div>
+      <div class="kpi"><small>Need information</small><strong id="metricMissing">0</strong></div>
+      <div class="kpi"><small>Licensed review</small><strong id="metricOther">0</strong></div>
+    </div>
+    <div class="desk-grid">
+      <div class="panel lead-list" id="leadList"></div>
+      <div class="panel detail" id="leadDetail"></div>
+    </div>
+    <p style="padding:22px 0 54px;color:#667781;font-size:12px">Hidden staff page. Username and password required.</p>
+  </div>
+</main>
+<footer class="site">
+  <div class="fgrid">
+    <div>
+      <img class="logo-mark" src="/public/questrock-logo.png?v=3" alt="QuestRock">
+      <p>QuestRock LLC — NMLS #1871037</p>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const amountLabels = { '10-49': '$10,000–$49,999', '50-99': '$50,000–$99,999', '100-249': '$100,000–$249,999', '250-plus': '$250,000+' };
+  const human = {
+    purpose:{debt:'Higher-interest debt',renovation:'Home improvement',flexibility:'Financial flexibility',investment:'Real estate investment',other:'Other'},
+    occupancy:{primary:'Primary residence',secondary:'Second home',investment:'Investment property',other:'Other'},
+    propertyType:{single_family:'Single-family',townhouse:'Townhouse',condo:'Condo',two_four:'2–4 units',mixed_use:'Mixed use',commercial:'Commercial',other:'Other'},
+    valueRange:{under250:'Under $250k','250-399':'$250k–$399k','400-599':'$400k–$599k','600-999':'$600k–$999k','1000plus':'$1m+',unknown:'Not sure'},
+    balanceRange:{none:'No mortgage',under100:'Under $100k','100-199':'$100k–$199k','200-299':'$200k–$299k','300-499':'$300k–$499k','500plus':'$500k+',unknown:'Not sure'}
+  };
+  const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const textValue = (name, val) => name in human ? (human[name][val] || val || '—') : (val || '—');
+  let selectedId = null, leads = [];
+  function when(iso){
+    const d = new Date(iso);
+    return isNaN(d) ? '' : d.toLocaleString();
+  }
+  function render(){
+    $('metricAll').textContent = leads.length;
+    $('metricPhone').textContent = leads.filter(l => (l.phone||'').length >= 10).length;
+    $('metricMissing').textContent = leads.filter(l => l.route==='NEEDS_INFORMATION').length;
+    $('metricOther').textContent = leads.filter(l => l.route==='LICENSED_REVIEW').length;
+    if (!leads.length){
+      $('leadList').innerHTML = '<div style="padding:18px;color:#667781;font-size:13px">No inquiries yet.</div>';
+      $('leadDetail').innerHTML = '<p>Waiting for the first request.</p>';
+      return;
+    }
+    if (!selectedId || !leads.some(l=>l.id===selectedId)) selectedId = leads[0].id;
+    $('leadList').innerHTML = leads.map(l=>`<button class="lead-item ${l.id===selectedId?'active':''}" data-id="${escapeHtml(l.id)}"><div><strong>${escapeHtml(l.first_name||'')} ${escapeHtml(l.last_name||'')}</strong><small>${escapeHtml(l.property_state||'')} · ${escapeHtml(textValue('purpose', l.purpose))} · ${escapeHtml(when(l.created_at))}</small><small>${escapeHtml(l.phone||'')} · ${escapeHtml(l.email||'')}</small></div><div style="text-align:right"><div class="amount">${escapeHtml(amountLabels[l.amount]||'')}</div></div></button>`).join('');
+    $('leadList').querySelectorAll('[data-id]').forEach(n=>n.addEventListener('click', ()=>{ selectedId=n.dataset.id; render(); }));
+    const l = leads.find(x=>x.id===selectedId) || leads[0];
+    const records = [
+      ['Phone', l.phone],
+      ['Email', l.email],
+      ['Preferred contact', l.preferred_contact],
+      ['Purpose', textValue('purpose', l.purpose)],
+      ['Requested line', amountLabels[l.amount]||l.amount],
+      ['State', l.property_state],
+      ['Property type', textValue('propertyType', l.property_type)],
+      ['Occupancy', textValue('occupancy', l.occupancy)],
+      ['Value range', textValue('valueRange', l.value_range)],
+      ['Mortgage balance', textValue('balanceRange', l.balance_range)]
+    ];
+    $('leadDetail').innerHTML = `<h2>${escapeHtml(l.first_name||'')} ${escapeHtml(l.last_name||'')}</h2><p>${escapeHtml(when(l.created_at))}</p><div class="review-grid">${records.map(([k,v])=>`<div class="review-line"><span>${escapeHtml(k)}</span><strong>${escapeHtml(v||'—')}</strong></div>`).join('')}</div>`;
+  }
+  document.getElementById('signOut').addEventListener('click', async () => {
+    await fetch('/api/desk-logout', { method: 'POST', credentials: 'same-origin' });
+    location.href = '/desk';
+  });
+  fetch('/api/inquiries', { credentials: 'same-origin' }).then(r=>{
+    if (r.status === 401) { location.href = '/desk'; return null; }
+    return r.json();
+  }).then(data=>{
+    leads = data && Array.isArray(data.rows) ? data.rows : [];
+    render();
+  }).catch(()=>render());
+})();
+</script>
+</body>
+</html>

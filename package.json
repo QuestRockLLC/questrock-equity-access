@@ -1,0 +1,8 @@
+{
+  "name": "questrock-equity-access",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}
