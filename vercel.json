@@ -1,10 +1,8 @@
 {
+  "framework": null,
   "functions": {
     "api/desk.js": {
       "includeFiles": "desk.html"
-    },
-    "api/*.js": {
-      "includeFiles": "{desk.html,lib/**}"
     }
   },
   "rewrites": [
