@@ -1,4 +1,4 @@
-import { loadEnv, validate, sb } from "../lib/core.mjs";
+import { loadEnv, postShape, sb, validate } from "../lib/core.mjs";
 
 await loadEnv();
 
@@ -17,7 +17,13 @@ export default async function handler(req, res) {
       res.status(400).json({ ok: false, error: checked.error });
       return;
     }
-    await sb("equity_access_inquiries", { method: "POST", body: checked.row });
+    const saved = await sb("equity_access_inquiries", { method: "POST", body: checked.row });
+    const row = Array.isArray(saved) ? saved[0] : saved;
+    const shape = await postShape(row || checked.row);
+    if (row?.id) {
+      const payload = { ...(row.payload || {}), shape };
+      await sb(`equity_access_inquiries?id=eq.${encodeURIComponent(row.id)}`, { method: "PATCH", body: { payload } });
+    }
     res.status(200).json({ ok: true });
   } catch (err) {
     res.status(err.status || 500).json({

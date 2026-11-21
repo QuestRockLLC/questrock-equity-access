@@ -18,7 +18,7 @@
   <div class="wrap">
     <div class="desk-hero">
       <h1>Equity Access submissions</h1>
-      <p>Inquiries from the public form. Call or email from here. Nothing is sent automatically.</p>
+      <p id="roleNotice">Inquiries from the public form. Licensed LO authorizes any Aven step. Admin coordinates only. Nothing is sent to Aven automatically.</p>
     </div>
     <div class="kpis">
       <div class="kpi"><small>Showing</small><strong id="metricShown">0</strong></div>
@@ -78,7 +78,7 @@
   };
   const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const textValue = (name, val) => name in human ? (human[name][val] || val || '—') : (val || '—');
-  let selectedId = null, leads = [];
+  let selectedId = null, leads = [], staff = { role: 'admin', name: 'Jason' };
 
   function when(iso){
     const d = new Date(iso);
@@ -124,6 +124,9 @@
     $('metricAll').textContent = leads.length;
     $('metricPhone').textContent = leads.filter(l => (l.phone||'').length >= 10).length;
     $('metricMissing').textContent = leads.filter(l => l.route==='NEEDS_INFORMATION').length;
+    $('roleNotice').textContent = staff.role === 'originator'
+      ? 'Licensed LO: review product fit and authorize Aven preparation. You cannot quote a rate here.'
+      : 'Jason · Admin: queue, missing facts, and follow-up only. No product advice, pricing, or Aven authorization.';
     if (!leads.length){
       $('leadList').innerHTML = '<div style="padding:18px;color:#667781;font-size:13px">No inquiries yet.</div>';
       $('leadDetail').innerHTML = '<p>Waiting for the first request.</p>';
@@ -150,7 +153,28 @@
       ['Value range', textValue('valueRange', l.value_range)],
       ['Mortgage balance', textValue('balanceRange', l.balance_range)]
     ];
-    $('leadDetail').innerHTML = `<h2>${escapeHtml(l.first_name||'')} ${escapeHtml(l.last_name||'')}</h2><p>${escapeHtml(when(l.created_at))}</p><div class="review-grid">${records.map(([k,v])=>`<div class="review-line"><span>${escapeHtml(k)}</span><strong>${escapeHtml(v||'—')}</strong></div>`).join('')}</div>`;
+    const owner = (l.payload && l.payload.assigned_owner) || 'Licensed review required';
+    const route = l.route_label || l.route || 'Review';
+    const flags = Array.isArray(l.flags) ? l.flags : [];
+    const avenOk = l.payload && l.payload.aven_authorized;
+    const loBtns = staff.role === 'originator'
+      ? `<button type="button" class="primary" data-action="authorize_aven_prep">Authorize Aven preparation</button><button type="button" class="secondary" data-action="mark_alt_review">Alternate product review</button>`
+      : `<button type="button" class="secondary" data-action="admin_queued">Mark admin queued</button>`;
+    $('leadDetail').innerHTML = `<h2>${escapeHtml(l.first_name||'')} ${escapeHtml(l.last_name||'')}</h2><p>${escapeHtml(when(l.created_at))} · ${escapeHtml(l.status||'')}</p><p class="desk-route"><strong>${escapeHtml(route)}</strong> · Owner: ${escapeHtml(owner)}${avenOk?' · Aven prep authorized':''}</p><p class="fine">Work-routing only. No credit decision, rate, or eligibility finding.</p>${flags.length?`<ul class="fine">${flags.map(f=>`<li>${escapeHtml(f)}</li>`).join('')}</ul>`:''}<div class="review-grid">${records.map(([k,v])=>`<div class="review-line"><span>${escapeHtml(k)}</span><strong>${escapeHtml(v||'—')}</strong></div>`).join('')}</div><div class="step-actions">${loBtns}<button type="button" class="plain" data-action="mark_need_info">Need information</button></div>`;
+    $('leadDetail').querySelectorAll('[data-action]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const res = await fetch('/api/inquiry-action', {
+          method:'POST', credentials:'same-origin',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ id: l.id, action: btn.dataset.action })
+        });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok || !data.ok) { alert(data.error || 'Could not update'); return; }
+        const i = leads.findIndex(x=>x.id===l.id);
+        if (i>=0 && data.row) leads[i] = data.row;
+        render();
+      });
+    });
   }
   function applyPreset(){
     const p = $('preset').value;
@@ -179,6 +203,7 @@
     return r.json();
   }).then(data=>{
     leads = data && Array.isArray(data.rows) ? data.rows : [];
+    if (data && data.staff) staff = data.staff;
     render();
   }).catch(()=>render());
 })();

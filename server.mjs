@@ -4,10 +4,11 @@ import { basename, extname, join } from "node:path";
 import {
   COOKIE,
   ROOT,
-  cfg,
+  applyDeskAction,
+  findStaff,
   loadEnv,
   parseCookies,
-  safeEqual,
+  postShape,
   sb,
   sessionCookieValue,
   signSession,
@@ -19,7 +20,6 @@ import {
 await loadEnv();
 
 const PORT = Number(process.env.PORT || 8770);
-const { deskUser, deskPass } = cfg();
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -39,7 +39,8 @@ async function readJson(req) {
 }
 
 function staffOk(req, res, { html } = {}) {
-  if (validSession(parseCookies(req)[COOKIE])) return true;
+  const staff = validSession(parseCookies(req)[COOKIE]);
+  if (staff) return staff;
   if (html) {
     res.writeHead(302, { Location: "/desk/login" });
     res.end();
@@ -79,6 +80,13 @@ const server = createServer(async (req, res) => {
       }
       const saved = await sb("equity_access_inquiries", { method: "POST", body: checked.row });
       const row = Array.isArray(saved) ? saved[0] : saved;
+      const shape = await postShape(row || checked.row);
+      if (row?.id) {
+        await sb(`equity_access_inquiries?id=eq.${encodeURIComponent(row.id)}`, {
+          method: "PATCH",
+          body: { payload: { ...(row.payload || {}), shape } },
+        });
+      }
       console.log("equity-access saved", row?.id, checked.row.property_state, checked.row.purpose);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ ok: true }));
@@ -87,16 +95,50 @@ const server = createServer(async (req, res) => {
 
     if (req.method === "POST" && url.pathname === "/api/desk-login") {
       const body = await readJson(req);
-      const email = str(body.email, 200).toLowerCase();
-      const password = String(body.password ?? "");
-      if (!safeEqual(email, deskUser) || !safeEqual(password, deskPass)) {
+      const staff = findStaff(str(body.email, 200), String(body.password ?? ""));
+      if (!staff) {
         res.writeHead(401, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ ok: false, error: "That email or password is not correct." }));
         return;
       }
-      res.setHeader("Set-Cookie", sessionCookieValue(signSession(email, Date.now() + 86400 * 1000)));
+      res.setHeader("Set-Cookie", sessionCookieValue(signSession(staff.email, staff.role, Date.now() + 86400 * 1000)));
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ ok: true }));
+      res.end(JSON.stringify({ ok: true, role: staff.role, name: staff.name }));
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === "/api/me") {
+      const staff = staffOk(req, res);
+      if (!staff) return;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: true, ...staff }));
+      return;
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/inquiry-action") {
+      const staff = staffOk(req, res);
+      if (!staff) return;
+      const body = await readJson(req);
+      const id = str(body.id, 80);
+      const rows = await sb(`equity_access_inquiries?id=eq.${encodeURIComponent(id)}&select=*`);
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      if (!row) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: "Inquiry not found." }));
+        return;
+      }
+      const next = applyDeskAction(row, str(body.action, 40), staff);
+      if (next.error) {
+        res.writeHead(403, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: next.error }));
+        return;
+      }
+      const saved = await sb(`equity_access_inquiries?id=eq.${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: { status: next.status, payload: next.payload },
+      });
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: true, row: Array.isArray(saved) ? saved[0] : saved }));
       return;
     }
 
@@ -108,10 +150,11 @@ const server = createServer(async (req, res) => {
     }
 
     if (req.method === "GET" && url.pathname === "/api/inquiries") {
-      if (!staffOk(req, res)) return;
+      const staff = staffOk(req, res);
+      if (!staff) return;
       const rows = await sb("equity_access_inquiries?select=*&order=created_at.desc&limit=100");
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ ok: true, rows: rows || [] }));
+      res.end(JSON.stringify({ ok: true, rows: rows || [], staff }));
       return;
     }
 

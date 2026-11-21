@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <title>QuestRock Home Loans | Equity Access</title>
-  <link rel="stylesheet" href="/styles.css?v=11">
+  <link rel="stylesheet" href="/styles.css?v=12">
 </head>
 <body>
 <header>
@@ -57,7 +57,7 @@
             <div class="form-block">
               <label class="main">What's the primary purpose?</label>
               <div class="choice-row" data-choice-group="purpose">
-                <button type="button" class="choice active" data-value="debt">Consolidate higher interest debt</button>
+                <button type="button" class="choice" data-value="debt">Consolidate higher interest debt</button>
                 <button type="button" class="choice" data-value="renovation">Renovate or improve a home</button>
                 <button type="button" class="choice" data-value="flexibility">Have funds available</button>
                 <button type="button" class="choice" data-value="investment">Real estate investment</button>
@@ -68,7 +68,7 @@
               <label class="main">Approximately how much would you like to access?</label>
               <div class="choice-row" data-choice-group="amount">
                 <button type="button" class="choice" data-value="10-49">$10,000 – $49,999</button>
-                <button type="button" class="choice active" data-value="50-99">$50,000 – $99,999</button>
+                <button type="button" class="choice" data-value="50-99">$50,000 – $99,999</button>
                 <button type="button" class="choice" data-value="100-249">$100,000 – $249,999</button>
                 <button type="button" class="choice" data-value="250-plus">$250,000 or more</button>
               </div>
@@ -83,7 +83,7 @@
                 <label class="main" for="state">Property state <span class="required">*</span></label>
                 <select id="state" class="field">
                   <option value="">Select state</option>
-                  <option value="GA" selected>Georgia</option>
+                  <option value="GA">Georgia</option>
                   <option value="FL">Florida</option>
                   <option value="TN">Tennessee</option>
                   <option value="NC">North Carolina</option>
@@ -97,7 +97,8 @@
               <div class="form-block">
                 <label class="main" for="occupancy">How do you use the property? <span class="required">*</span></label>
                 <select class="field" id="occupancy">
-                  <option value="primary" selected>Primary residence</option>
+                  <option value="">Choose occupancy</option>
+                  <option value="primary">Primary residence</option>
                   <option value="secondary">Second home</option>
                   <option value="investment">Rental / investment</option>
                   <option value="other">Other / not sure</option>
@@ -106,7 +107,8 @@
               <div class="form-block">
                 <label class="main" for="propertyType">Property type <span class="required">*</span></label>
                 <select class="field" id="propertyType">
-                  <option value="single_family" selected>Single-family house</option>
+                  <option value="">Choose type</option>
+                  <option value="single_family">Single-family house</option>
                   <option value="townhouse">Townhouse</option>
                   <option value="condo">Condominium</option>
                   <option value="two_four">2–4 residential units</option>
@@ -121,7 +123,7 @@
                   <option value="">Choose range</option>
                   <option value="under250">Under $250,000</option>
                   <option value="250-399">$250,000 – $399,999</option>
-                  <option value="400-599" selected>$400,000 – $599,999</option>
+                  <option value="400-599">$400,000 – $599,999</option>
                   <option value="600-999">$600,000 – $999,999</option>
                   <option value="1000plus">$1 million+</option>
                   <option value="unknown">Not sure</option>
@@ -134,7 +136,7 @@
                   <option value="none">No current mortgage</option>
                   <option value="under100">Under $100,000</option>
                   <option value="100-199">$100,000 – $199,999</option>
-                  <option value="200-299" selected>$200,000 – $299,999</option>
+                  <option value="200-299">$200,000 – $299,999</option>
                   <option value="300-499">$300,000 – $499,999</option>
                   <option value="500plus">$500,000+</option>
                   <option value="unknown">Not sure</option>
@@ -143,7 +145,8 @@
               <div class="form-block">
                 <label class="main" for="currentMortgage">Do you have a mortgage today? <span class="required">*</span></label>
                 <select class="field" id="currentMortgage">
-                  <option value="yes" selected>Yes</option>
+                  <option value="">Choose</option>
+                  <option value="yes">Yes</option>
                   <option value="no">No</option>
                   <option value="unsure">Not sure</option>
                 </select>
@@ -287,7 +290,15 @@
   };
   const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const textValue = (name, val) => name in human ? (human[name][val] || val || '') : (val || '');
-  const intake = {purpose:'debt',amount:'50-99',state:'GA',occupancy:'primary',propertyType:'single_family',valueRange:'400-599',balanceRange:'200-299',currentMortgage:'yes'};
+  const params = new URLSearchParams(location.search);
+  const utm = {
+    utm_source: params.get('utm_source') || '',
+    utm_medium: params.get('utm_medium') || '',
+    utm_campaign: params.get('utm_campaign') || '',
+    utm_content: params.get('utm_content') || '',
+    utm_term: params.get('utm_term') || ''
+  };
+  const intake = {purpose:'',amount:'',state:'',occupancy:'',propertyType:'',valueRange:'',balanceRange:'',currentMortgage:''};
   let step = 0;
 
   document.querySelectorAll('[data-choice-group]').forEach(group=>{
@@ -312,6 +323,9 @@
     ['state','occupancy','propertyType','valueRange','balanceRange','currentMortgage'].forEach(id=>intake[id]=$(id).value);
   }
   function validate(){
+    if (step===0){
+      return Boolean(intake.purpose && intake.amount);
+    }
     if (step===1){
       readProperty();
       return ['state','occupancy','propertyType','valueRange','balanceRange','currentMortgage'].every(k=>intake[k]);
@@ -346,7 +360,8 @@
           phone: $('phone').value.trim(),
           contact: $('contact').value,
           otherProducts: $('otherProducts').checked,
-          contactConsent: $('contactConsent').checked
+          contactConsent: $('contactConsent').checked,
+          ...utm
         })
       });
       const data = await res.json();
@@ -370,6 +385,7 @@
   }
   $('goForward').addEventListener('click', ()=>{
     if (!validate()){
+      if (step===0) alert('Please choose a purpose and amount.');
       if (step===1) alert('Please complete the property details.');
       return;
     }
