@@ -51,7 +51,8 @@ function staffOk(req, res, { html } = {}) {
 }
 
 function filePathFor(pathname) {
-  if (pathname === "/" || pathname === "/index.html") return join(ROOT, "index.html");
+  if (pathname === "/" || pathname === "/index.html") return join(ROOT, "public", "index.html");
+  if (pathname === "/login.html") return join(ROOT, "public", "login.html");
   const name = basename(pathname.replace(/^\/public\//, "/"));
   if (ASSETS.has(name)) return join(ROOT, "public", name);
   return null;
@@ -120,7 +121,7 @@ const server = createServer(async (req, res) => {
         res.end();
         return;
       }
-      const file = await readFile(join(ROOT, "login.html"));
+      const file = await readFile(join(ROOT, "public", "login.html"));
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(file);
       return;

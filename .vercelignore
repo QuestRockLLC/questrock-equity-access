@@ -1,3 +1,2 @@
 .env.local
-server.mjs
 sql
