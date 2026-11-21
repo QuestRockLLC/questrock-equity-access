@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/desk.js": {
+      "includeFiles": "desk.html"
+    }
+  },
   "rewrites": [
     { "source": "/public/:path*", "destination": "/:path*" },
     { "source": "/desk/login", "destination": "/login.html" },

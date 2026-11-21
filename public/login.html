@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>QuestRock staff sign in</title>
+  <link rel="stylesheet" href="/styles.css?v=9">
+</head>
+<body>
+<header>
+  <div class="shell header-inner">
+    <a href="/"><img class="logo" src="/questrock-logo.png?v=3" alt="QuestRock"></a>
+  </div>
+</header>
+<main class="login-wrap">
+  <form class="login-card" id="loginForm">
+    <img class="logo" src="/questrock-logo.png?v=3" alt="QuestRock">
+    <h1>Staff sign in</h1>
+    <p>Equity Access submissions. Use your QuestRock staff email.</p>
+    <label for="email">Email</label>
+    <input class="field" id="email" name="email" type="email" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input class="field" id="password" name="password" type="password" autocomplete="current-password" required>
+    <p class="show-error" id="loginError" role="alert">That email or password is not correct.</p>
+    <button class="primary" type="submit" id="loginBtn">Sign in</button>
+  </form>
+</main>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  err.classList.remove('visible');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/desk-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Sign in failed');
+    location.href = '/desk';
+  } catch (ex) {
+    err.textContent = ex.message || 'That email or password is not correct.';
+    err.classList.add('visible');
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
