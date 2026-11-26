@@ -161,6 +161,8 @@
   const titleEl = document.getElementById("walkTitle");
   const lineEl = document.getElementById("walkLine");
   const bodyEl = document.getElementById("walkBody");
+  const copyLive = document.querySelector(".walk-copy");
+  if (copyLive) copyLive.setAttribute("aria-live", "polite");
   const prevBtn = document.getElementById("walkPrev");
   const nextBtn = document.getElementById("walkNext");
   const times = document.getElementById("walkTimes");
@@ -217,17 +219,30 @@
   const heroCta = document.getElementById("heroCta");
   if (sticky && heroCta && "IntersectionObserver" in window) {
     const mobile = window.matchMedia("(max-width: 850px)");
-    const io = new IntersectionObserver((entries) => {
-      const show = mobile.matches && !entries[0].isIntersecting && window.scrollY > 120;
+    let heroVisible = true;
+    let timesVisible = false;
+    function updateSticky() {
+      const show = mobile.matches && !heroVisible && !timesVisible && !modal.open && window.scrollY > 120;
       sticky.hidden = !show;
       document.body.classList.toggle("sticky-on", show);
-    }, { threshold: 0, rootMargin: "0px 0px -40px 0px" });
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.target === heroCta) heroVisible = entry.isIntersecting;
+        if (entry.target === times) timesVisible = entry.isIntersecting;
+      });
+      updateSticky();
+    }, { threshold: 0, rootMargin: "0px 0px -48px 0px" });
     io.observe(heroCta);
-    mobile.addEventListener("change", () => {
-      if (!mobile.matches) {
+    if (times) io.observe(times);
+    mobile.addEventListener("change", updateSticky);
+    window.addEventListener("scroll", updateSticky, { passive: true });
+    modal.addEventListener("close", updateSticky);
+    document.querySelectorAll("[data-open]").forEach((btn) => {
+      btn.addEventListener("click", () => {
         sticky.hidden = true;
         document.body.classList.remove("sticky-on");
-      }
+      });
     });
   }
 

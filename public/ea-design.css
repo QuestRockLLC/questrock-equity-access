@@ -539,6 +539,7 @@ dialog h2 {
   .walk-phone { order: -1; }
   .phone-window { width: min(100%, 280px); }
   .walk-times { grid-template-columns: repeat(3, 1fr); }
+  body.sticky-on { padding-bottom: 92px; }
 }
 @media (max-width: 600px) {
   .wrap { padding: 0 19px; }
@@ -573,7 +574,6 @@ dialog h2 {
   .reviews .grid3 { grid-template-columns: 1fr; }
   .review-hide-mobile { display: none; }
   .footer .between { align-items: start; flex-direction: column; }
-  body.sticky-on { padding-bottom: 84px; }
 }
 @media (min-width: 851px) {
   .sticky-cta { display: none !important; }
