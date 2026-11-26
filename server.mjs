@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { basename, extname, join } from "node:path";
+import { extname, join } from "node:path";
 import {
   COOKIE,
   ROOT,
@@ -16,6 +16,7 @@ import {
   validate,
   validSession,
 } from "./lib/core.mjs";
+import { resolveReferral } from "./lib/referral.mjs";
 
 await loadEnv();
 
@@ -28,9 +29,10 @@ const TYPES = {
   ".jpeg": "image/jpeg",
   ".png": "image/png",
   ".webp": "image/webp",
+  ".js": "text/javascript; charset=utf-8",
 };
 
-const ASSETS = new Set(["styles.css", "hero.jpg", "why-home.jpg", "questrock-logo.png"]);
+const PUBLIC_PREFIXES = ["/aven-ui/", "/app.js", "/styles.css", "/ea-design.css", "/hero.jpg", "/hero-home.jpg", "/why-home.jpg", "/questrock-logo.png"];
 
 async function readJson(req) {
   const chunks = [];
@@ -54,8 +56,10 @@ function staffOk(req, res, { html } = {}) {
 function filePathFor(pathname) {
   if (pathname === "/" || pathname === "/index.html") return join(ROOT, "public", "index.html");
   if (pathname === "/login.html") return join(ROOT, "public", "login.html");
-  const name = basename(pathname.replace(/^\/public\//, "/"));
-  if (ASSETS.has(name)) return join(ROOT, "public", name);
+  const clean = pathname.replace(/^\/public/, "") || "/";
+  if (PUBLIC_PREFIXES.some((p) => clean === p || clean.startsWith("/aven-ui/"))) {
+    return join(ROOT, "public", clean.replace(/^\//, ""));
+  }
   return null;
 }
 
@@ -71,6 +75,26 @@ const server = createServer(async (req, res) => {
   }
 
   try {
+    if (req.method === "POST" && url.pathname === "/api/referral") {
+      const body = await readJson(req);
+      const result = resolveReferral({
+        state: body.state,
+        loHint: body.loHint || body.utm_content || body.lo,
+      });
+      res.writeHead(200, { "Content-Type": "application/json" });
+      if (!result.ok) {
+        res.end(JSON.stringify({ ok: false, code: result.code }));
+        return;
+      }
+      res.end(JSON.stringify({
+        ok: true,
+        state: result.state,
+        continueHost: "flow.avenfoundry.com",
+        url: result.url,
+      }));
+      return;
+    }
+
     if (req.method === "POST" && url.pathname === "/api/inquiry") {
       const checked = validate(await readJson(req));
       if (checked.error) {
