@@ -233,25 +233,24 @@
 
   const sticky = document.getElementById("stickyCta");
   const heroCta = document.getElementById("heroCta");
+  const finalCta = document.querySelector(".final-card [data-open]");
   if (sticky && heroCta && "IntersectionObserver" in window) {
-    const mobile = window.matchMedia("(max-width: 850px)");
     let heroVisible = true;
-    let timesVisible = false;
+    let finalVisible = false;
     function updateSticky() {
-      const show = mobile.matches && !heroVisible && !timesVisible && !modal.open && window.scrollY > 120;
+      const show = !heroVisible && !finalVisible && !modal.open && window.scrollY > 80;
       sticky.hidden = !show;
       document.body.classList.toggle("sticky-on", show);
     }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.target === heroCta) heroVisible = entry.isIntersecting;
-        if (entry.target === times) timesVisible = entry.isIntersecting;
+        if (entry.target === finalCta) finalVisible = entry.isIntersecting;
       });
       updateSticky();
-    }, { threshold: 0, rootMargin: "0px 0px -48px 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -40px 0px" });
     io.observe(heroCta);
-    if (times) io.observe(times);
-    mobile.addEventListener("change", updateSticky);
+    if (finalCta) io.observe(finalCta);
     window.addEventListener("scroll", updateSticky, { passive: true });
     modal.addEventListener("close", updateSticky);
     document.querySelectorAll("[data-open]").forEach((btn) => {
