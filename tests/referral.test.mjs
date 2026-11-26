@@ -16,11 +16,12 @@ test("KY and TX resolve to Bill without a campaign hint", () => {
   }
 });
 
-test("overlapping states fail closed without a verified LO hint", () => {
+test("overlapping states without a campaign hint use Nikk’s verified flow", () => {
   for (const state of ["GA", "FL", "TN", "NC", "SC", "AL"]) {
     const result = resolveReferral({ state });
-    assert.equal(result.ok, false);
-    assert.equal(result.code, "unmapped");
+    assert.equal(result.ok, true);
+    assert.equal(result.lo, "nikk");
+    assert.equal(result.url, LO_REFERRAL_URLS.nikk);
   }
 });
 

@@ -90,6 +90,7 @@
         statusEl.hidden = false;
         statusEl.className = "status error";
         statusEl.textContent = messages[data.code] || messages.unmapped;
+        continueBtn.disabled = true;
         return;
       }
       window.location.assign(data.url);
@@ -97,7 +98,9 @@
       statusEl.hidden = false;
       statusEl.className = "status error";
       statusEl.textContent = messages.network;
+      continueBtn.disabled = true;
     } finally {
+      if (!statusEl.hidden) return;
       continueBtn.disabled = !selected || selected === "OTHER";
     }
   }
