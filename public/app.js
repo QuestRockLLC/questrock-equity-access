@@ -117,49 +117,43 @@
   const steps = [
     {
       title: "Review your information",
-      body: "Review the required personal information, property details, and applicable disclosures.",
-      note: "Your information stays in Aven’s application, not on this QuestRock page.",
-      short: "Review your information",
+      body: "Confirm your details and disclosures.",
+      short: "Info",
       src: "/aven-ui/step-01-info.webp",
       alt: "Example Aven screen for reviewing information and consents",
     },
     {
-      title: "Explore your options",
-      body: "Review available financing options, credit line amounts, repayment terms, and associated fees.",
-      note: "Prequalification is not final approval. Sample terms on this screen are not your offer.",
-      short: "Explore your offer",
+      title: "See your options",
+      body: "Look at a sample offer and terms.",
+      short: "Options",
       src: "/aven-ui/step-02-options.webp",
       alt: "Example Aven screen for reviewing a prequalified offer",
     },
     {
-      title: "Complete verification",
-      body: "Complete required income, identity, or additional verification through Aven’s available methods.",
-      note: "Requirements vary by applicant.",
-      short: "Verify your information",
+      title: "Verify",
+      body: "Confirm income or identity if asked.",
+      short: "Verify",
       src: "/aven-ui/step-03-verify.webp",
       alt: "Example Aven screen for income verification",
     },
     {
-      title: "Review your final offer",
-      body: "Review the final offer, repayment terms, costs, and applicable conditions before deciding whether to accept.",
-      note: "Check the repayment terms, fees, and secured borrowing risks.",
-      short: "Accept your final offer",
+      title: "Review your offer",
+      body: "Check the terms before you accept.",
+      short: "Offer",
       src: "/aven-ui/step-04-offer.webp",
       alt: "Example Aven screen for reviewing a final offer",
     },
     {
-      title: "Arrange your closing",
-      body: "Follow Aven’s closing instructions. Online or in-person closing requirements vary by property state.",
-      note: "Georgia, South Carolina, and Texas may require an in-person closing.",
-      short: "Arrange your closing",
+      title: "Arrange closing",
+      body: "Schedule signing, online or in person.",
+      short: "Closing",
       src: "/aven-ui/step-05-closing.webp",
       alt: "Example Aven screen for scheduling closing",
     },
     {
       title: "Access your funds",
-      body: "Funds can be released following closing, applicable waiting periods, and clearance of outstanding conditions.",
-      note: "Funding may be available in as little as five days. Timing is not guaranteed.",
-      short: "Access your funds",
+      body: "After closing, funds can be released.",
+      short: "Funding",
       src: "/aven-ui/step-06-funding.webp",
       alt: "Example Aven screen describing funding after closing",
     },
@@ -170,7 +164,6 @@
   const barEl = document.getElementById("walkBar");
   const titleEl = document.getElementById("walkTitle");
   const bodyEl = document.getElementById("walkBody");
-  const noteEl = document.getElementById("walkNote");
   const imageEl = document.getElementById("walkImage");
   const prevBtn = document.getElementById("walkPrev");
   const nextBtn = document.getElementById("walkNext");
@@ -194,7 +187,6 @@
     countEl.textContent = String(stepIndex + 1).padStart(2, "0") + " / 06";
     titleEl.textContent = step.title;
     bodyEl.textContent = step.body;
-    noteEl.textContent = step.note;
     imageEl.src = step.src;
     imageEl.alt = step.alt;
     imageEl.style.animation = "none";

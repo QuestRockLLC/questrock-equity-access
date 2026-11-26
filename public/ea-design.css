@@ -292,24 +292,13 @@ p { color: var(--muted); }
 }
 .walk-desc {
   font-size: 17px;
-  min-height: 78px;
+  margin: 0 0 22px;
   color: var(--muted);
 }
-.walk-note {
-  display: flex;
-  gap: 10px;
-  align-items: start;
-  background: #f0faf3;
-  border-radius: 11px;
-  padding: 13px;
-  margin: 20px 0;
-}
-.walk-note span { color: #187536; font-weight: 800; }
-.walk-note p { font-size: 13px; margin: 0; color: var(--ink); }
 .walk-progress {
   display: flex;
   gap: 6px;
-  margin: 22px 0 27px;
+  margin: 18px 0 22px;
 }
 .walk-progress span {
   height: 4px;
@@ -598,7 +587,6 @@ dialog h2 {
   .walk-device { height: 340px; }
   .walk-tabs { order: 3; grid-template-columns: repeat(3, 1fr); }
   .walk-tab { border-bottom: 1px solid #e8eee8; }
-  .walk-desc { min-height: 0; }
   .walk-cta { width: 100%; }
   body.sticky-on { padding-bottom: 92px; }
 }
