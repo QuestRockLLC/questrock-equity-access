@@ -12,9 +12,10 @@
   --gold: #e0b000;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: Arial, Helvetica, sans-serif;
   background: var(--paper);
   color: var(--ink);
@@ -222,38 +223,31 @@ p { color: var(--muted); }
 .use-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 16px;
   margin-top: 32px;
 }
 .use {
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid #e8ece8;
-  box-shadow: 0 12px 28px rgba(20, 24, 28, .06);
+  background: #f6f9f6;
+  border-radius: 18px;
+  padding: 26px 24px 28px;
+  border-left: 4px solid var(--green);
 }
-.use-photo {
+.use span {
   display: block;
-  width: 100%;
-  height: 176px;
-  object-fit: cover;
-}
-.use-body { padding: 20px 22px 24px; }
-.use-body span {
-  display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.8px;
   color: #187536;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
-.use-body h3 {
-  font-size: 21px;
-  letter-spacing: -.4px;
-  margin: 0 0 8px;
+.use h3 {
+  font-size: 22px;
+  letter-spacing: -.5px;
+  line-height: 1.2;
+  margin: 0 0 10px;
   color: var(--navy);
 }
-.use-body p {
+.use p {
   font-size: 15px;
   margin: 0;
   line-height: 1.5;
@@ -422,20 +416,13 @@ p { color: var(--muted); }
 .walk-caption {
   position: relative;
   z-index: 1;
-  font-size: 10px;
-  color: rgba(255,255,255,.82);
+  font-size: 12px;
+  color: rgba(255,255,255,.88);
   text-align: center;
-  margin: 13px 0 0;
+  margin: 14px 0 0;
+  max-width: 220px;
+  line-height: 1.35;
 }
-.walk-phone-cta {
-  position: relative;
-  z-index: 1;
-  margin-top: 16px;
-  background: #fff;
-  color: #187536;
-  box-shadow: 0 12px 24px rgba(8, 40, 18, .28);
-}
-.walk-phone-cta:hover { background: #f4faf5; color: #14632e; }
 .walk-tabs {
   grid-column: 1 / -1;
   display: grid;
@@ -647,14 +634,18 @@ dialog h2 {
   .section { padding: 55px 0; }
   .grid3 { grid-template-columns: 1fr; }
   .use-grid { grid-template-columns: 1fr; }
-  .walk-card { grid-template-columns: 1fr; }
-  .walk-copy { padding: 25px; order: 2; }
-  .walk-visual { order: 1; min-height: 410px; padding: 17px; }
-  .walk-device { height: 340px; }
+  .walk-card { grid-template-columns: 1fr; border-radius: 18px; }
+  .walk-copy { padding: 22px 20px 24px; order: 2; }
+  .walk-visual { order: 1; min-height: 0; padding: 20px 16px 18px; }
+  .walk-device { height: min(58vw, 320px); }
+  .walk-orbit { width: 280px; height: 280px; }
+  .walk-orbit.b { width: 360px; height: 360px; }
+  .walk-orbit.c { display: none; }
+  .walk-tag { font-size: 11px; margin-bottom: 10px; }
   .walk-tabs { order: 3; grid-template-columns: repeat(3, 1fr); }
-  .walk-tab { border-bottom: 1px solid #e8eee8; }
-  .walk-cta,
-  .walk-phone-cta { width: 100%; }
+  .walk-tab { border-bottom: 1px solid #e8eee8; padding: 12px 6px; font-size: 11px; }
+  .walk-cta { width: 100%; }
+  .walk-kicker { flex-wrap: wrap; }
   .use-cta .btn { width: 100%; }
 }
 @media (max-width: 600px) {
@@ -677,9 +668,9 @@ dialog h2 {
   .trust .wrap { grid-template-columns: 1fr; gap: 9px; }
   .trustitem { border: 0; }
   .trust { padding: 15px 0; }
-  .use-photo { height: 150px; }
   .section h2, .walk-intro h2 { font-size: 32px; }
-  .walkthrough { padding: 48px 0 40px; }
+  .walkthrough { padding: 40px 0 32px; }
+  .walk-device { height: min(70vw, 300px); }
   .walk-controls button { min-height: 48px; }
   .journey-head { align-items: start; flex-direction: column; }
   .faqgrid { grid-template-columns: 1fr; gap: 15px; }
