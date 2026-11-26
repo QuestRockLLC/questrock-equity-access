@@ -117,99 +117,123 @@
   const steps = [
     {
       title: "Review your information",
-      line: "Start your journey with confidence.",
       body: "Review the required personal information, property details, and applicable disclosures.",
-      short: "Review info",
+      note: "Your information stays in Aven’s application, not on this QuestRock page.",
+      short: "Review your information",
+      src: "/aven-ui/step-01-info.webp",
+      alt: "Example Aven screen for reviewing information and consents",
     },
     {
       title: "Explore your options",
-      line: "Find an offer that works for you.",
-      body: "Review available financing options, credit line amounts, repayment terms, and associated fees. Prequalification is not final approval.",
-      short: "Explore options",
+      body: "Review available financing options, credit line amounts, repayment terms, and associated fees.",
+      note: "Prequalification is not final approval. Sample terms on this screen are not your offer.",
+      short: "Explore your offer",
+      src: "/aven-ui/step-02-options.webp",
+      alt: "Example Aven screen for reviewing a prequalified offer",
     },
     {
       title: "Complete verification",
-      line: "Verify your information.",
       body: "Complete required income, identity, or additional verification through Aven’s available methods.",
-      short: "Verification",
+      note: "Requirements vary by applicant.",
+      short: "Verify your information",
+      src: "/aven-ui/step-03-verify.webp",
+      alt: "Example Aven screen for income verification",
     },
     {
       title: "Review your final offer",
-      line: "Understand your terms before committing.",
       body: "Review the final offer, repayment terms, costs, and applicable conditions before deciding whether to accept.",
-      short: "Final offer",
+      note: "Check the repayment terms, fees, and secured borrowing risks.",
+      short: "Accept your final offer",
+      src: "/aven-ui/step-04-offer.webp",
+      alt: "Example Aven screen for reviewing a final offer",
     },
     {
       title: "Arrange your closing",
-      line: "Move forward on your schedule.",
-      body: "Follow Aven’s closing instructions. Online or in-person closing requirements vary by property state. Georgia, South Carolina, and Texas may require an in-person closing.",
-      short: "Closing",
+      body: "Follow Aven’s closing instructions. Online or in-person closing requirements vary by property state.",
+      note: "Georgia, South Carolina, and Texas may require an in-person closing.",
+      short: "Arrange your closing",
+      src: "/aven-ui/step-05-closing.webp",
+      alt: "Example Aven screen for scheduling closing",
     },
     {
       title: "Access your funds",
-      line: "Move toward funding.",
-      body: "Funds can be released following closing, applicable waiting periods, and clearance of outstanding conditions. Funding may be available in as little as five days. Timing is not guaranteed.",
-      short: "Funding",
+      body: "Funds can be released following closing, applicable waiting periods, and clearance of outstanding conditions.",
+      note: "Funding may be available in as little as five days. Timing is not guaranteed.",
+      short: "Access your funds",
+      src: "/aven-ui/step-06-funding.webp",
+      alt: "Example Aven screen describing funding after closing",
     },
   ];
 
   let stepIndex = 0;
-  const track = document.getElementById("phoneTrack");
   const countEl = document.getElementById("walkCount");
   const barEl = document.getElementById("walkBar");
-  const kickerEl = document.getElementById("walkKicker");
   const titleEl = document.getElementById("walkTitle");
-  const lineEl = document.getElementById("walkLine");
   const bodyEl = document.getElementById("walkBody");
-  const copyLive = document.querySelector(".walk-copy");
-  if (copyLive) copyLive.setAttribute("aria-live", "polite");
+  const noteEl = document.getElementById("walkNote");
+  const imageEl = document.getElementById("walkImage");
   const prevBtn = document.getElementById("walkPrev");
   const nextBtn = document.getElementById("walkNext");
   const times = document.getElementById("walkTimes");
   const phoneWindow = document.getElementById("phoneWindow");
+  const walkCard = document.getElementById("walkCard");
+
+  steps.forEach((step, i) => {
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className = "walk-tab";
+    tab.innerHTML = "<b>0" + (i + 1) + "</b>" + step.short;
+    tab.addEventListener("click", () => setStep(i));
+    times.appendChild(tab);
+    barEl.appendChild(document.createElement("span"));
+  });
 
   function setStep(next) {
     stepIndex = Math.max(0, Math.min(steps.length - 1, next));
     const step = steps[stepIndex];
-    const n = String(stepIndex + 1).padStart(2, "0");
-    countEl.textContent = n + " / 06";
-    barEl.style.width = ((stepIndex + 1) / steps.length) * 100 + "%";
-    kickerEl.textContent = "Step " + (stepIndex + 1);
+    countEl.textContent = String(stepIndex + 1).padStart(2, "0") + " / 06";
     titleEl.textContent = step.title;
-    lineEl.textContent = step.line;
     bodyEl.textContent = step.body;
-    track.style.transform = "translateX(-" + stepIndex * 100 + "%)";
-    prevBtn.disabled = stepIndex === 0;
-    nextBtn.disabled = stepIndex === steps.length - 1;
-    times.querySelectorAll("button").forEach((btn, i) => {
-      if (i === stepIndex) btn.setAttribute("aria-current", "true");
+    noteEl.textContent = step.note;
+    imageEl.src = step.src;
+    imageEl.alt = step.alt;
+    imageEl.style.animation = "none";
+    requestAnimationFrame(() => { imageEl.style.animation = ""; });
+    Array.from(times.children).forEach((btn, i) => {
+      if (i === stepIndex) btn.setAttribute("aria-current", "step");
       else btn.removeAttribute("aria-current");
     });
+    Array.from(barEl.children).forEach((seg, i) => {
+      seg.classList.toggle("current", i <= stepIndex);
+    });
+    prevBtn.disabled = stepIndex === 0;
+    nextBtn.disabled = stepIndex === steps.length - 1;
+    nextBtn.textContent = nextBtn.disabled ? "Journey complete ✓" : "Next step →";
   }
 
   prevBtn.addEventListener("click", () => setStep(stepIndex - 1));
   nextBtn.addEventListener("click", () => setStep(stepIndex + 1));
-  times.addEventListener("click", (event) => {
-    const btn = event.target.closest("button[data-step]");
-    if (!btn) return;
-    setStep(Number(btn.dataset.step));
-  });
-  phoneWindow.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight") setStep(stepIndex + 1);
-    if (event.key === "ArrowLeft") setStep(stepIndex - 1);
+  walkCard.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      setStep(stepIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
     if (event.key === "Home") setStep(0);
     if (event.key === "End") setStep(steps.length - 1);
   });
 
   let touchX = null;
+  let touchY = null;
   phoneWindow.addEventListener("touchstart", (event) => {
     touchX = event.changedTouches[0].clientX;
+    touchY = event.changedTouches[0].clientY;
   }, { passive: true });
   phoneWindow.addEventListener("touchend", (event) => {
     if (touchX == null) return;
     const dx = event.changedTouches[0].clientX - touchX;
+    const dy = event.changedTouches[0].clientY - touchY;
     touchX = null;
-    if (Math.abs(dx) < 40) return;
+    if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)) return;
     setStep(stepIndex + (dx < 0 ? 1 : -1));
   }, { passive: true });
 

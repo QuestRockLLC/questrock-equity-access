@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QuestRock Home Loans | Equity Access</title>
   <meta name="description" content="Explore a home equity line of credit online through Aven. QuestRock is your loan partner. Subject to eligibility and approval.">
-  <link rel="stylesheet" href="/ea-design.css?v=8">
+  <link rel="stylesheet" href="/ea-design.css?v=9">
 </head>
 <body>
   <div class="top">
@@ -59,51 +59,44 @@
       </div>
     </div>
 
-    <section id="journey" class="walkthrough" aria-roledescription="carousel" aria-label="Example Aven application walkthrough">
+    <section id="journey" class="walkthrough">
       <div class="wrap">
         <div class="walk-intro">
           <div class="eyebrow"><span class="dot"></span> Example application experience</div>
           <h2>Your HELOC journey, before you begin.</h2>
           <p class="intro">See what the process looks like before getting started. Explore each step at your own pace and continue whenever you’re ready. These screens are examples, not a live application or your terms.</p>
         </div>
-        <div class="walk-stage">
+        <div class="walk-card" id="walkCard" aria-roledescription="carousel" aria-label="Example Aven application walkthrough" tabindex="0">
           <div class="walk-copy">
-            <div class="walk-meta">
+            <div class="walk-kicker">
               <span id="walkCount">01 / 06</span>
-              <div class="walk-progress" aria-hidden="true"><i id="walkBar"></i></div>
+              <span>The borrower experience</span>
             </div>
-            <p class="walk-kicker" id="walkKicker">Step 1</p>
-            <h3 id="walkTitle">Review your information</h3>
-            <p class="walk-line" id="walkLine">Start your journey with confidence.</p>
-            <p id="walkBody">Review the required personal information, property details, and applicable disclosures.</p>
-            <div class="walk-nav">
+            <div class="walk-progress" id="walkBar" aria-hidden="true"></div>
+            <div aria-live="polite" aria-atomic="true">
+              <h3 id="walkTitle">Review your information</h3>
+              <p class="walk-desc" id="walkBody">Review the required personal information, property details, and applicable disclosures.</p>
+              <div class="walk-note"><span>✓</span><p id="walkNote">Your information stays in Aven’s application, not on this QuestRock page.</p></div>
+            </div>
+            <div class="walk-controls">
               <button type="button" id="walkPrev" aria-label="Previous step">←</button>
-              <button type="button" id="walkNext" aria-label="Next step">→</button>
+              <button type="button" id="walkNext">Next step →</button>
             </div>
-            <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
+            <button class="btn walk-cta" type="button" data-open>Explore my HELOC options <span>→</span></button>
             <p class="micro">Aven handles the application, underwriting, closing, and funding.</p>
           </div>
-          <div class="walk-phone">
-            <div class="phone-window" id="phoneWindow" tabindex="0">
-              <div class="phone-track" id="phoneTrack">
-                <figure class="phone-slide"><img src="/aven-ui/step-01-info.webp" alt="Example Aven screen for reviewing information and consents" width="880" height="1802"></figure>
-                <figure class="phone-slide"><img src="/aven-ui/step-02-options.webp" alt="Example Aven screen for reviewing a prequalified offer" width="816" height="1616"></figure>
-                <figure class="phone-slide"><img src="/aven-ui/step-03-verify.webp" alt="Example Aven screen for income verification" width="880" height="1802"></figure>
-                <figure class="phone-slide"><img src="/aven-ui/step-04-offer.webp" alt="Example Aven screen for reviewing a final offer" width="880" height="1800"></figure>
-                <figure class="phone-slide"><img src="/aven-ui/step-05-closing.webp" alt="Example Aven screen for scheduling closing" width="880" height="1802"></figure>
-                <figure class="phone-slide"><img src="/aven-ui/step-06-funding.webp" alt="Example Aven screen describing funding after closing" width="880" height="1802"></figure>
-              </div>
+          <div class="walk-visual" id="phoneWindow">
+            <div class="walk-orbit a"></div>
+            <div class="walk-orbit b"></div>
+            <div class="walk-tag"><span class="dot"></span> Actual borrower interface</div>
+            <div class="walk-device">
+              <img id="walkImage" src="/aven-ui/step-01-info.webp" width="880" height="1802" alt="Example Aven screen for reviewing information and consents" draggable="false">
             </div>
+            <p class="walk-caption">Aven training example · sample screens, not your terms</p>
           </div>
+          <div class="walk-tabs" id="walkTimes" aria-label="Choose a borrower journey step"></div>
         </div>
-        <ol class="walk-times" id="walkTimes">
-          <li><button type="button" data-step="0" aria-current="true">Review info</button></li>
-          <li><button type="button" data-step="1">Explore options</button></li>
-          <li><button type="button" data-step="2">Verification</button></li>
-          <li><button type="button" data-step="3">Final offer</button></li>
-          <li><button type="button" data-step="4">Closing</button></li>
-          <li><button type="button" data-step="5">Funding</button></li>
-        </ol>
+        <p class="note">Screens from Aven’s borrower training. These are selected examples, not a complete application or a promise of any specific offer.</p>
       </div>
     </section>
 
@@ -237,6 +230,6 @@
   <div class="sticky-cta" id="stickyCta" hidden>
     <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
   </div>
-  <script src="/app.js?v=33"></script>
+  <script src="/app.js?v=34"></script>
 </body>
 </html>
