@@ -219,15 +219,49 @@ p { color: var(--muted); }
   gap: 16px;
   margin-top: 29px;
 }
-.benefit {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 27px;
-  background: #fff;
+.use-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 32px;
 }
-.benefit .round { margin-bottom: 22px; }
-.benefit h3 { font-size: 19px; margin-bottom: 7px; color: var(--navy); }
-.benefit p { font-size: 15px; }
+.use {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #e8ece8;
+  box-shadow: 0 12px 28px rgba(20, 24, 28, .06);
+}
+.use-photo {
+  height: 176px;
+  background-image: url(/hero-home.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.use-photo.one { background-position: 52% 38%; }
+.use-photo.two { background-position: 80% 78%; }
+.use-photo.three { background-position: 18% 22%; }
+.use-body { padding: 20px 22px 24px; }
+.use-body span {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  color: #187536;
+  margin-bottom: 8px;
+}
+.use-body h3 {
+  font-size: 21px;
+  letter-spacing: -.4px;
+  margin: 0 0 8px;
+  color: var(--navy);
+}
+.use-body p {
+  font-size: 15px;
+  margin: 0;
+  line-height: 1.5;
+}
+.use-cta { margin-top: 28px; }
 .journey-head {
   display: flex;
   justify-content: space-between;
@@ -396,6 +430,15 @@ p { color: var(--muted); }
   text-align: center;
   margin: 13px 0 0;
 }
+.walk-phone-cta {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+  background: #fff;
+  color: #187536;
+  box-shadow: 0 12px 24px rgba(8, 40, 18, .28);
+}
+.walk-phone-cta:hover { background: #f4faf5; color: #14632e; }
 .walk-tabs {
   grid-column: 1 / -1;
   display: grid;
@@ -603,13 +646,16 @@ dialog h2 {
   .faqgrid { gap: 30px; }
   .section { padding: 55px 0; }
   .grid3 { grid-template-columns: 1fr; }
+  .use-grid { grid-template-columns: 1fr; }
   .walk-card { grid-template-columns: 1fr; }
   .walk-copy { padding: 25px; order: 2; }
   .walk-visual { order: 1; min-height: 410px; padding: 17px; }
   .walk-device { height: 340px; }
   .walk-tabs { order: 3; grid-template-columns: repeat(3, 1fr); }
   .walk-tab { border-bottom: 1px solid #e8eee8; }
-  .walk-cta { width: 100%; }
+  .walk-cta,
+  .walk-phone-cta { width: 100%; }
+  .use-cta .btn { width: 100%; }
   body.sticky-on { padding-bottom: 92px; }
 }
 @media (max-width: 600px) {
@@ -632,7 +678,7 @@ dialog h2 {
   .trust .wrap { grid-template-columns: 1fr; gap: 9px; }
   .trustitem { border: 0; }
   .trust { padding: 15px 0; }
-  .benefit { padding: 20px; }
+  .use-photo { height: 150px; }
   .section h2, .walk-intro h2 { font-size: 32px; }
   .walkthrough { padding: 48px 0 40px; }
   .walk-controls button { min-height: 48px; }
