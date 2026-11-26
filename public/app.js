@@ -114,6 +114,123 @@
   });
   continueBtn.addEventListener("click", continueToAven);
 
+  const steps = [
+    {
+      title: "Review your information",
+      line: "Start your journey with confidence.",
+      body: "Review the required personal information, property details, and applicable disclosures.",
+      short: "Review info",
+    },
+    {
+      title: "Explore your options",
+      line: "Find an offer that works for you.",
+      body: "Review available financing options, credit line amounts, repayment terms, and associated fees. Prequalification is not final approval.",
+      short: "Explore options",
+    },
+    {
+      title: "Complete verification",
+      line: "Verify your information.",
+      body: "Complete required income, identity, or additional verification through Aven’s available methods.",
+      short: "Verification",
+    },
+    {
+      title: "Review your final offer",
+      line: "Understand your terms before committing.",
+      body: "Review the final offer, repayment terms, costs, and applicable conditions before deciding whether to accept.",
+      short: "Final offer",
+    },
+    {
+      title: "Arrange your closing",
+      line: "Move forward on your schedule.",
+      body: "Follow Aven’s closing instructions. Online or in-person closing requirements vary by property state. Georgia, South Carolina, and Texas may require an in-person closing.",
+      short: "Closing",
+    },
+    {
+      title: "Access your funds",
+      line: "Move toward funding.",
+      body: "Funds can be released following closing, applicable waiting periods, and clearance of outstanding conditions. Funding may be available in as little as five days. Timing is not guaranteed.",
+      short: "Funding",
+    },
+  ];
+
+  let stepIndex = 0;
+  const track = document.getElementById("phoneTrack");
+  const countEl = document.getElementById("walkCount");
+  const barEl = document.getElementById("walkBar");
+  const kickerEl = document.getElementById("walkKicker");
+  const titleEl = document.getElementById("walkTitle");
+  const lineEl = document.getElementById("walkLine");
+  const bodyEl = document.getElementById("walkBody");
+  const prevBtn = document.getElementById("walkPrev");
+  const nextBtn = document.getElementById("walkNext");
+  const times = document.getElementById("walkTimes");
+  const phoneWindow = document.getElementById("phoneWindow");
+
+  function setStep(next) {
+    stepIndex = Math.max(0, Math.min(steps.length - 1, next));
+    const step = steps[stepIndex];
+    const n = String(stepIndex + 1).padStart(2, "0");
+    countEl.textContent = n + " / 06";
+    barEl.style.width = ((stepIndex + 1) / steps.length) * 100 + "%";
+    kickerEl.textContent = "Step " + (stepIndex + 1);
+    titleEl.textContent = step.title;
+    lineEl.textContent = step.line;
+    bodyEl.textContent = step.body;
+    track.style.transform = "translateX(-" + stepIndex * 100 + "%)";
+    prevBtn.disabled = stepIndex === 0;
+    nextBtn.disabled = stepIndex === steps.length - 1;
+    times.querySelectorAll("button").forEach((btn, i) => {
+      if (i === stepIndex) btn.setAttribute("aria-current", "true");
+      else btn.removeAttribute("aria-current");
+    });
+  }
+
+  prevBtn.addEventListener("click", () => setStep(stepIndex - 1));
+  nextBtn.addEventListener("click", () => setStep(stepIndex + 1));
+  times.addEventListener("click", (event) => {
+    const btn = event.target.closest("button[data-step]");
+    if (!btn) return;
+    setStep(Number(btn.dataset.step));
+  });
+  phoneWindow.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") setStep(stepIndex + 1);
+    if (event.key === "ArrowLeft") setStep(stepIndex - 1);
+    if (event.key === "Home") setStep(0);
+    if (event.key === "End") setStep(steps.length - 1);
+  });
+
+  let touchX = null;
+  phoneWindow.addEventListener("touchstart", (event) => {
+    touchX = event.changedTouches[0].clientX;
+  }, { passive: true });
+  phoneWindow.addEventListener("touchend", (event) => {
+    if (touchX == null) return;
+    const dx = event.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) < 40) return;
+    setStep(stepIndex + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  setStep(0);
+
+  const sticky = document.getElementById("stickyCta");
+  const heroCta = document.getElementById("heroCta");
+  if (sticky && heroCta && "IntersectionObserver" in window) {
+    const mobile = window.matchMedia("(max-width: 850px)");
+    const io = new IntersectionObserver((entries) => {
+      const show = mobile.matches && !entries[0].isIntersecting && window.scrollY > 120;
+      sticky.hidden = !show;
+      document.body.classList.toggle("sticky-on", show);
+    }, { threshold: 0, rootMargin: "0px 0px -40px 0px" });
+    io.observe(heroCta);
+    mobile.addEventListener("change", () => {
+      if (!mobile.matches) {
+        sticky.hidden = true;
+        document.body.classList.remove("sticky-on");
+      }
+    });
+  }
+
   const reviews = [
     {
       quote: "Working with the team at QuestRock was an easy and seamless experience. They answered any and all questions I had along the way, and were very patient throughout the process. I highly recommend them!",

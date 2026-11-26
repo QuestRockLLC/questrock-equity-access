@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QuestRock Home Loans | Equity Access</title>
   <meta name="description" content="Explore a home equity line of credit online through Aven. QuestRock is your loan partner. Subject to eligibility and approval.">
-  <link rel="stylesheet" href="/ea-design.css?v=6">
+  <link rel="stylesheet" href="/ea-design.css?v=7">
 </head>
 <body>
   <div class="top">
@@ -22,7 +22,7 @@
       <nav class="navlinks" aria-label="Page">
         <a href="#journey">How it works</a>
         <a href="#faq">FAQs</a>
-        <button class="btn small" type="button" data-open>Explore options ↗</button>
+        <button class="btn small" type="button" data-open>Explore my HELOC options <span>→</span></button>
       </nav>
     </div>
   </header>
@@ -34,7 +34,7 @@
           <div class="eyebrow"><span class="dot"></span> Home equity line of credit</div>
           <h1>Your home.<br>Your equity.<br><em>Your next move.</em></h1>
           <p class="lead">Explore a HELOC for the things that matter to you. See your options online, then decide if you want to continue.</p>
-          <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
+          <button class="btn" id="heroCta" type="button" data-open>Explore my HELOC options <span>→</span></button>
           <p class="micro">You’ll choose your property state, then continue with Aven. Subject to eligibility and approval.</p>
         </div>
         <div class="hero-visual">
@@ -58,6 +58,54 @@
         <div class="trustitem"><span>✓</span> Qualifying files may fund in five days*</div>
       </div>
     </div>
+
+    <section id="journey" class="walkthrough" aria-roledescription="carousel" aria-label="Example Aven application walkthrough">
+      <div class="wrap">
+        <div class="walk-intro">
+          <div class="eyebrow"><span class="dot"></span> Example application experience</div>
+          <h2>Your HELOC journey, before you begin.</h2>
+          <p class="intro">See what the process looks like before getting started. Explore each step at your own pace and continue whenever you’re ready. These screens are examples, not a live application or your terms.</p>
+        </div>
+        <div class="walk-stage">
+          <div class="walk-copy">
+            <div class="walk-meta">
+              <span id="walkCount">01 / 06</span>
+              <div class="walk-progress" aria-hidden="true"><i id="walkBar"></i></div>
+            </div>
+            <p class="walk-kicker" id="walkKicker">Step 1</p>
+            <h3 id="walkTitle">Review your information</h3>
+            <p class="walk-line" id="walkLine">Start your journey with confidence.</p>
+            <p id="walkBody">Review the required personal information, property details, and applicable disclosures.</p>
+            <div class="walk-nav">
+              <button type="button" id="walkPrev" aria-label="Previous step">←</button>
+              <button type="button" id="walkNext" aria-label="Next step">→</button>
+            </div>
+            <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
+            <p class="micro">Aven handles the application, underwriting, closing, and funding.</p>
+          </div>
+          <div class="walk-phone">
+            <div class="phone-window" id="phoneWindow" tabindex="0">
+              <div class="phone-track" id="phoneTrack">
+                <figure class="phone-slide"><img src="/aven-ui/step-01-info.webp" alt="Example Aven screen for reviewing information and consents" width="880" height="1802"></figure>
+                <figure class="phone-slide"><img src="/aven-ui/step-02-options.webp" alt="Example Aven screen for reviewing a prequalified offer" width="816" height="1616"></figure>
+                <figure class="phone-slide"><img src="/aven-ui/step-03-verify.webp" alt="Example Aven screen for income verification" width="880" height="1802"></figure>
+                <figure class="phone-slide"><img src="/aven-ui/step-04-offer.webp" alt="Example Aven screen for reviewing a final offer" width="880" height="1800"></figure>
+                <figure class="phone-slide"><img src="/aven-ui/step-05-closing.webp" alt="Example Aven screen for scheduling closing" width="880" height="1802"></figure>
+                <figure class="phone-slide"><img src="/aven-ui/step-06-funding.webp" alt="Example Aven screen describing funding after closing" width="880" height="1802"></figure>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ol class="walk-times" id="walkTimes">
+          <li><button type="button" data-step="0" aria-current="true">Review info</button></li>
+          <li><button type="button" data-step="1">Explore options</button></li>
+          <li><button type="button" data-step="2">Verification</button></li>
+          <li><button type="button" data-step="3">Final offer</button></li>
+          <li><button type="button" data-step="4">Closing</button></li>
+          <li><button type="button" data-step="5">Funding</button></li>
+        </ol>
+      </div>
+    </section>
 
     <section class="section">
       <div class="wrap">
@@ -84,111 +132,6 @@
       </div>
     </section>
 
-    <section id="journey" class="section soft">
-      <div class="wrap">
-        <div class="journey-head">
-          <div>
-            <div class="eyebrow">Know what happens next</div>
-            <h2>Four steps. On Aven’s application.</h2>
-            <p class="intro">A preview of the borrower experience after you leave this page. These screens are examples, not an offer or your terms.</p>
-          </div>
-        </div>
-        <div class="stepgrid">
-          <article class="step">
-            <div class="stepart">
-              <span class="num">01</span>
-              <div class="device" aria-hidden="true">
-                <div class="device-chrome">aven.com</div>
-                <div class="device-body">
-                  <div class="aven-mark">Aven</div>
-                  <p class="device-h">See your home equity options</p>
-                  <p class="device-k">Property details</p>
-                  <div class="device-field">Property state</div>
-                  <div class="device-field">Estimated home value</div>
-                  <div class="device-btn">Continue</div>
-                </div>
-              </div>
-            </div>
-            <div class="stepcopy">
-              <h3>Explore options</h3>
-              <p>Start Aven’s application and provide the property and personal details it requires. Prequalification is not final approval.</p>
-            </div>
-          </article>
-          <article class="step">
-            <div class="stepart">
-              <span class="num">02</span>
-              <div class="device" aria-hidden="true">
-                <div class="device-chrome">aven.com</div>
-                <div class="device-body">
-                  <div class="aven-mark">Aven</div>
-                  <p class="device-h">Review your terms</p>
-                  <p class="device-k">Example only — not your offer</p>
-                  <div class="device-field">Cash at closing</div>
-                  <div class="device-field">Pre-payment fee</div>
-                  <div class="device-field">Redraw fee</div>
-                  <div class="device-btn">Continue</div>
-                </div>
-              </div>
-            </div>
-            <div class="stepcopy">
-              <h3>Review your offer</h3>
-              <p>If an offer is available, review line size, terms, and fees, then complete the verification Aven asks for.</p>
-            </div>
-          </article>
-          <article class="step">
-            <div class="stepart">
-              <span class="num">03</span>
-              <div class="device" aria-hidden="true">
-                <div class="device-chrome">aven.com</div>
-                <div class="device-body">
-                  <div class="aven-mark">Aven</div>
-                  <p class="device-h">Pick a time to sign</p>
-                  <p class="device-k">What’s next</p>
-                  <p class="device-note">Signing takes about 5–10 minutes. You’ll need your ID.</p>
-                  <div class="device-slot">Sign now</div>
-                  <div class="device-slot">Choose a time</div>
-                  <div class="device-slot muted">Show more</div>
-                </div>
-              </div>
-            </div>
-            <div class="stepcopy">
-              <h3>Complete closing</h3>
-              <p>Accept the final offer and arrange closing. Online where available; in-person may be required in GA, SC, and TX.</p>
-            </div>
-          </article>
-          <article class="step">
-            <div class="stepart">
-              <span class="num">04</span>
-              <div class="device" aria-hidden="true">
-                <div class="device-chrome">aven.com</div>
-                <div class="device-body">
-                  <div class="device-icon">🥂</div>
-                  <p class="device-h center">Welcome to Aven</p>
-                  <p class="device-note center">Access funds after closing and any required waiting period.</p>
-                  <p class="device-k">What’s next</p>
-                  <ul class="device-list">
-                    <li>Application</li>
-                    <li>Underwriting</li>
-                    <li>Accept offer</li>
-                    <li>Sign with notary</li>
-                    <li class="open">Funds after closing</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="stepcopy">
-              <h3>Access funds</h3>
-              <p>Funding follows any required waiting period and cleared conditions. Five-day timing is not guaranteed.</p>
-            </div>
-          </article>
-        </div>
-        <p class="note">*Qualifying applications may fund in as little as five days after closing and any required waiting period. Timing is not guaranteed.</p>
-        <div style="margin-top:24px">
-          <button class="btn" type="button" data-open>I’m ready to explore <span>→</span></button>
-        </div>
-      </div>
-    </section>
-
     <section class="section reviews" aria-label="QuestRock Google reviews">
       <div class="wrap">
         <div class="journey-head">
@@ -203,6 +146,9 @@
           </div>
         </div>
         <div class="grid3" id="reviewlist"></div>
+        <div class="review-cta">
+          <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
+        </div>
       </div>
     </section>
 
@@ -283,10 +229,14 @@
     <h2 id="modal-title">Where is your property located?</h2>
     <p>Select the property state. We do not collect your name, email, or phone number on this page.</p>
     <div class="states" id="states"></div>
+    <p class="handoff">QuestRock is your loan partner and facilitates this step. Aven handles the application, underwriting, closing, and funding.</p>
     <p class="status" id="status" hidden></p>
     <button id="continue" class="btn wide" type="button" disabled>Continue to Aven →</button>
     <p class="micro">Subject to eligibility and approval. Prequalification is not final approval.</p>
   </dialog>
-  <script src="/app.js?v=31"></script>
+  <div class="sticky-cta" id="stickyCta" hidden>
+    <button class="btn" type="button" data-open>Explore my HELOC options <span>→</span></button>
+  </div>
+  <script src="/app.js?v=32"></script>
 </body>
 </html>
