@@ -434,6 +434,22 @@ dialog h2 {
   color: var(--ink);
 }
 .status.error { background: #f8ece8; color: #8f3820; }
+.sticky-cta {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.96);
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 -8px 24px rgba(20,24,28,.08);
+}
+.sticky-cta .btn { width: 100%; max-width: 520px; }
+.sticky-cta[hidden] { display: none !important; }
+body.sticky-on { padding-bottom: 92px; }
 
 @media (min-width: 860px) {
   .wrap { padding: 0 30px; }
@@ -482,6 +498,25 @@ dialog h2 {
 @media (max-width: 390px) {
   .call-now { font-size: 11px; padding: 6px 8px; }
   h1 { font-size: 32px; }
+}
+
+@media (min-width: 851px) {
+  .sticky-cta {
+    left: 0;
+    right: 0;
+    bottom: 20px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    pointer-events: none;
+  }
+  .sticky-cta .btn {
+    width: auto;
+    min-width: 340px;
+    pointer-events: auto;
+    box-shadow: 0 14px 36px rgba(24, 117, 54, .35);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

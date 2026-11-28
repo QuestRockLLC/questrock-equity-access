@@ -114,6 +114,36 @@
   });
   continueBtn.addEventListener("click", continueToAven);
 
+  const sticky = document.getElementById("stickyCta");
+  const heroCta = document.getElementById("heroCta");
+  const finalCta = document.querySelector(".final-card [data-open]");
+  if (sticky && heroCta && "IntersectionObserver" in window) {
+    let heroVisible = true;
+    let finalVisible = false;
+    function updateSticky() {
+      const show = !heroVisible && !finalVisible && !modal.open && window.scrollY > 80;
+      sticky.hidden = !show;
+      document.body.classList.toggle("sticky-on", show);
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.target === heroCta) heroVisible = entry.isIntersecting;
+        if (entry.target === finalCta) finalVisible = entry.isIntersecting;
+      });
+      updateSticky();
+    }, { threshold: 0, rootMargin: "0px 0px -40px 0px" });
+    io.observe(heroCta);
+    if (finalCta) io.observe(finalCta);
+    window.addEventListener("scroll", updateSticky, { passive: true });
+    modal.addEventListener("close", updateSticky);
+    document.querySelectorAll("[data-open]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        sticky.hidden = true;
+        document.body.classList.remove("sticky-on");
+      });
+    });
+  }
+
   const reviews = [
     {
       quote: "Working with the team at QuestRock was an easy and seamless experience. They answered any and all questions I had along the way, and were very patient throughout the process. I highly recommend them!",
