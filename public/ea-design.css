@@ -447,7 +447,17 @@ dialog h2 {
   border-top: 1px solid #e5e5e5;
   box-shadow: 0 -8px 24px rgba(20,24,28,.08);
 }
-.sticky-cta .btn { width: 100%; max-width: 520px; }
+.sticky-cta .btn {
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(165deg, #102033 0%, #163528 46%, #1f7a3a 78%, #3aa85a 100%);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(16, 32, 51, .28);
+}
+.sticky-cta .btn:hover {
+  background: linear-gradient(165deg, #102033 0%, #163528 50%, #1a6a34 82%, #2f944c 100%);
+  color: #fff;
+}
 .sticky-cta[hidden] { display: none !important; }
 body.sticky-on { padding-bottom: 92px; }
 
@@ -515,7 +525,7 @@ body.sticky-on { padding-bottom: 92px; }
     width: auto;
     min-width: 340px;
     pointer-events: auto;
-    box-shadow: 0 14px 36px rgba(24, 117, 54, .35);
+    box-shadow: 0 14px 36px rgba(16, 32, 51, .35);
   }
 }
 
